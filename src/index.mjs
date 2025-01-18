@@ -5,7 +5,9 @@ import { USERS } from "./mockData/users.mjs";
 import { PRODUCTS } from "./mockData/products.mjs";
 import loggingMiddleware from "./middleware/logging.mjs";
 import errorHandlingMiddleware from "./middleware/errorHandler.mjs";
-import { usernameValidator, displayNameValidator } from "./validators/users.mjs";
+import { userCreateValidationSchema } from "./validators/schemas.mjs";
+import { checkSchema } from "express-validator";
+
 const app = express();
 
 app.use(express.json());
@@ -40,12 +42,10 @@ app.get("/api/users/:id", resolveUserByIdMiddleware, (req, res) => {
 
 app.post(
   "/api/users",
-  [
-    usernameValidator(),
-    displayNameValidator(),
-  ],
+  checkSchema(userCreateValidationSchema),
   (req, res) => {
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
