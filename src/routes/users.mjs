@@ -25,12 +25,9 @@ router.get("/", (req, res) => {
     res.json(user);
   });
   
-  router.post(
-    "/",
-    checkSchema(userCreateValidationSchema),
-    (req, res) => {
-      const errors = validationResult(req);
-  
+  router.post("/", checkSchema(userCreateValidationSchema), (req, res) => {
+    const errors = validationResult(req);
+
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
