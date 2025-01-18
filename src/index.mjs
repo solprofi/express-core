@@ -1,26 +1,19 @@
 import express from "express";
+import { matchedData, validationResult } from "express-validator";
+import resolveUserByIdMiddleware from "./middleware/resolveUserById.mjs";
+import { USERS } from "./mockData/users.mjs";
+import { PRODUCTS } from "./mockData/products.mjs";
+import loggingMiddleware from "./middleware/logging.mjs";
+import errorHandlingMiddleware from "./middleware/errorHandler.mjs";
+import { usernameValidator, displayNameValidator } from "./validators/users.mjs";
 const app = express();
 
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-const USERS = [
-  { id: 1, username: "johndoe", displayName: "John Doe" },
-  { id: 2, username: "janedoe", displayName: "Jane Doe" },
-  { id: 3, username: "jsmith", displayName: "John Smith" },
-  { id: 4, username: "janesmith", displayName: "Jane Smith" },
-  { id: 5, username: "robertj", displayName: "Robert Johnson" },
-  { id: 6, username: "sarahw", displayName: "Sarah Williams" },
-  { id: 7, username: "mikeb", displayName: "Michael Brown" },
-  { id: 8, username: "emmad", displayName: "Emma Davis" },
-];
-
-const PRODUCTS = [
-  { id: 1, name: "Product 1" },
-  { id: 2, name: "Product 2" },
-  { id: 3, name: "Product 3" },
-];
+app.use(loggingMiddleware);
+app.use(errorHandlingMiddleware);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -40,19 +33,66 @@ app.get("/api/users", (req, res) => {
   res.json(filteredUsers);
 });
 
-app.get("/api/users/:id", (req, res) => {
-  const parsedId = parseInt(req.params.id);
-  if (isNaN(parsedId)) {
-    return res.status(400).json({ message: "Invalid user ID" });
+app.get("/api/users/:id", resolveUserByIdMiddleware, (req, res) => {
+  const user = USERS.find((user) => user.id === req.userId);
+  res.json(user);
+});
+
+app.post(
+  "/api/users",
+  [
+    usernameValidator(),
+    displayNameValidator(),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const data = matchedData(req);
+
+    const { username, displayName } = data;
+    const newUser = { id: USERS.length + 1, username, displayName };
+
+    USERS.push(newUser);
+
+    res.status(201).json(newUser);
+});
+
+app.put("/api/users/:id", resolveUserByIdMiddleware, (req, res) => {
+  const user = USERS.find((user) => user.id === req.userId);
+
+  const { username, displayName } = req.body;
+
+  user.username = username;
+  user.displayName = displayName;
+
+  res.json(user);
+});
+
+app.patch("/api/users/:id", resolveUserByIdMiddleware, (req, res) => {
+  const user = USERS.find((user) => user.id === req.userId);
+
+  const { username, displayName } = req.body;
+
+  if (username) {
+    user.username = username;
   }
 
-  const user = USERS.find((user) => user.id === parsedId);
-
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+  if (displayName) {
+    user.displayName = displayName;
   }
 
   res.json(user);
+});
+
+app.delete("/api/users/:id", resolveUserByIdMiddleware, (req, res) => {
+  const index = USERS.findIndex((user) => user.id === req.userId);
+
+  USERS.splice(index, 1);
+
+  res.sendStatus(204);
 });
 
 app.get("/api/products", (req, res) => {
