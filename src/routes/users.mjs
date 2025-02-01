@@ -3,6 +3,7 @@ import resolveUserByIdMiddleware from "../middleware/resolveUserById.mjs";
 import { USERS } from "../mockData/users.mjs";
 import { userCreateValidationSchema } from "../validators/schemas.mjs";
 import { matchedData, validationResult, checkSchema } from "express-validator";
+import User from "../mongoose/schemas/user.js";
 
 const router = express.Router();
 
@@ -25,21 +26,18 @@ router.get("/:id", resolveUserByIdMiddleware, (req, res) => {
   res.json(user);
 });
 
-router.post("/", checkSchema(userCreateValidationSchema), (req, res) => {
-  const errors = validationResult(req);
+router.post("/", async (req, res) => {
+  const { username, displayName, password } = req.body;
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+  const user = new User({ username, displayName, password });
+
+  try {
+    await user.save();
+
+    res.status(201).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: "Error creating user" });
   }
-
-  const data = matchedData(req);
-
-  const { username, displayName } = data;
-  const newUser = { id: USERS.length + 1, username, displayName };
-
-  USERS.push(newUser);
-
-  res.status(201).json(newUser);
 });
 
 router.put("/:id", resolveUserByIdMiddleware, (req, res) => {

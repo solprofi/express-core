@@ -7,9 +7,11 @@ import errorHandlingMiddleware from "./middleware/errorHandler.mjs";
 import router from "./routes/index.mjs";
 import passport from "passport";
 import './strategies/local.mjs';
+import connectDb from "./config/dbConnection.mjs";
 
 // Load environment variables from .env file
 dotenv.config();
+connectDb();
 
 // Set up configuration constants from environment variables with fallbacks
 const PORT = process.env.PORT || 3000;
@@ -18,6 +20,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET;
 
 // Create Express application instance
 const app = express();
+
 
 // Enable JSON parsing middleware for request bodies
 app.use(express.json());
