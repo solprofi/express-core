@@ -3,7 +3,8 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { USERS } from "../mockData/users.mjs";
 
 // Serialize user object to store in session
-// Only store user.id in the session to keep it light
+// Only store user.id in the session to keep it light 
+// and avoid storing sensitive or stale data
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -19,10 +20,6 @@ passport.deserializeUser((id, done) => {
 // Configure and export local authentication strategy
 export default passport.use(new LocalStrategy(
   (username, password, done) => {
-    // Log authentication attempt details
-    console.log("username", username);
-    console.log("password", password);
-
     // Find user in mock database by username
     const user = USERS.find((user) => user.username === username);
 

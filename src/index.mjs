@@ -30,7 +30,7 @@ app.use(
     resave: false, // Don't save session if unmodified
     saveUninitialized: false, // Don't create session until something stored
     cookie: {
-      maxAge: 60000 * 60 * 24, // Cookie expires after 24 hours
+      maxAge: 1000 * 60 * 60 * 24, // Cookie expires after 24 hours
       httpOnly: true, // Prevents client side JS from reading the cookie 
     },
   })
