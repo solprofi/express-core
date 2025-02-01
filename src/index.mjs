@@ -6,7 +6,7 @@ import loggingMiddleware from "./middleware/logging.mjs";
 import errorHandlingMiddleware from "./middleware/errorHandler.mjs";
 import router from "./routes/index.mjs";
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
+import './strategies/local.mjs';
 
 // Load environment variables from .env file
 dotenv.config();
