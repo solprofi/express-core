@@ -26,8 +26,13 @@ router.get("/:id", resolveUserByIdMiddleware, (req, res) => {
   res.json(user);
 });
 
-router.post("/", async (req, res) => {
-  const { username, displayName, password } = req.body;
+router.post("/", checkSchema(userCreateValidationSchema), async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { username, displayName, password } = matchedData(req);
 
   const user = new User({ username, displayName, password });
 
