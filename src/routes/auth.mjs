@@ -23,4 +23,12 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+router.get("/status", (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Not logged in" });
+  }
+
+  res.json(req.user);
+});
+
 export default router;

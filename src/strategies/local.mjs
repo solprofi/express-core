@@ -11,6 +11,8 @@ passport.serializeUser((user, done) => {
 // Deserialize user from session (turn the stored id back into a user object)
 passport.deserializeUser((id, done) => {
   const user = USERS.find((user) => user.id === id);
+  delete user.password;
+  
   done(null, user);
 });
 
@@ -30,7 +32,6 @@ export default passport.use(new LocalStrategy(
     }
 
     // If password doesn't match, return error
-    // Note: In production, passwords should be hashed
     if (user.password !== password) {
       return done(null, false, { message: 'Invalid password' });
     }
