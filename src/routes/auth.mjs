@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import { hashPassword } from "../utils/helpers.mjs";
+import { hashPassword } from "../utils/auth.mjs";
 import User from "../mongoose/schemas/user.js";
 import { userCreateValidationSchema } from "../validators/schemas.mjs";
 import { matchedData, validationResult, checkSchema } from "express-validator";
@@ -51,7 +51,7 @@ router.post("/logout", (req, res) => {
 
 router.post("/register", checkSchema(userCreateValidationSchema), async (req, res) => {
   const errors = validationResult(req);
-  
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
