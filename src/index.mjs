@@ -1,9 +1,9 @@
-import express, { response } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import dotenv from "dotenv";
-import loggingMiddleware from "./middleware/logging.mjs";
-import errorHandlingMiddleware from "./middleware/errorHandler.mjs";
+import loggingMiddleware from "./middlewares/logging.mjs";
+import errorHandlingMiddleware from "./middlewares/errorHandler.mjs";
 import router from "./routes/index.mjs";
 import passport from "passport";
 import './strategies/local.mjs';
@@ -11,6 +11,8 @@ import connectDb from "./config/dbConnection.mjs";
 
 // Load environment variables from .env file
 dotenv.config();
+
+// Connect to MongoDB
 connectDb();
 
 // Set up configuration constants from environment variables with fallbacks

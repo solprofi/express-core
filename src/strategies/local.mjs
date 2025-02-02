@@ -1,6 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import User from "../mongoose/schemas/user.js";
+import { comparePassword } from "../utils/helpers.mjs";
 
 // Serialize user object to store in session
 // Only store user.id in the session to keep it light 
@@ -11,8 +12,8 @@ passport.serializeUser((user, done) => {
 
 // Deserialize user from session (turn the stored id back into a user object)
 passport.deserializeUser(async (id, done) => {
-  const user = await User.findById(id);
-  delete user.password;
+  const user = await User.findById(id).select('-password');
+
   
   done(null, user);
 });
@@ -21,6 +22,7 @@ passport.deserializeUser(async (id, done) => {
 export default passport.use(new LocalStrategy(
   async (username, password, done) => {
     try {
+  
       // Find user in mock database by username
       const user = await User.findOne({ username });
 
@@ -30,11 +32,12 @@ export default passport.use(new LocalStrategy(
       }
 
       // If password doesn't match, return error
-      if (user.password !== password) {
+      if (!(await comparePassword(password, user.password))) {
         return done(null, false, { message: 'Invalid password' });
       }
         
-      // If authentication successful, return user object
+      // If authentication successful, return user object 
+      // to be called in serializeUser
       return done(null, user);
     } catch (error) {
       return done(error);
