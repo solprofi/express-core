@@ -6,10 +6,12 @@ import loggingMiddleware from "./middlewares/logging.mjs";
 import errorHandlingMiddleware from "./middlewares/errorHandler.mjs";
 import router from "./routes/index.mjs";
 import passport from "passport";
-import './strategies/local.mjs';
 import connectDb from "./config/dbConnection.mjs";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
+
+// import './strategies/local.mjs';
+import './strategies/discord.mjs';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -24,7 +26,6 @@ const SESSION_SECRET = process.env.SESSION_SECRET;
 
 // Create Express application instance
 const app = express();
-
 
 // Enable JSON parsing middleware for request bodies
 app.use(express.json());

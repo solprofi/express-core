@@ -12,9 +12,12 @@ passport.serializeUser((user, done) => {
 
 // Deserialize user from session (turn the stored id back into a user object)
 passport.deserializeUser(async (id, done) => {
-  const user = await User.findById(id).select('-password');
-
-  done(null, user);
+  try {
+    const user = await User.findById(id).select('-password');
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
 });
 
 // Configure and export local authentication strategy

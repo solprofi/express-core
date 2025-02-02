@@ -28,6 +28,10 @@ router.post("/login", (req, res, next) => {
 });
 
 router.get("/status", (req, res) => {
+  console.log('STATUS');
+  console.log('req.user', req.user);
+  console.log('req.session', req.session);
+
   if (!req.user) {
     return res.status(401).json({ message: "Not logged in" });
   }
@@ -74,6 +78,12 @@ router.post("/register", checkSchema(userCreateValidationSchema), async (req, re
   }
 });
 
+router.get('/discord', passport.authenticate('discord'));
+
+router.get('/discord/redirect', passport.authenticate('discord', {
+  successRedirect: '/api/auth/status',
+  failureRedirect: '/login',
+}));
 
 export default router;
 
