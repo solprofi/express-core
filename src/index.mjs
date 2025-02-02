@@ -8,6 +8,8 @@ import router from "./routes/index.mjs";
 import passport from "passport";
 import './strategies/local.mjs';
 import connectDb from "./config/dbConnection.mjs";
+import MongoStore from "connect-mongo";
+import mongoose from "mongoose";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -38,6 +40,10 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24, // Cookie expires after 24 hours
       httpOnly: true, // Prevents client side JS from reading the cookie 
     },
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+      ttl: 60 * 60 * 24, // 1 day
+    }),
   })
 );
 
