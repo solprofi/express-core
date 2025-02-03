@@ -84,9 +84,13 @@ router.patch("/:id", isAuthenticated, async (req, res) => {
 });
 
 router.delete("/:id", isAuthenticated, async (req, res) => {
-  const user = await User.findById(req.params.id);
-
   try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     await user.deleteOne();
     res.sendStatus(204);
   } catch (error) {
