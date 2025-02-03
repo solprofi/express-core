@@ -28,10 +28,6 @@ router.post("/login", (req, res, next) => {
 });
 
 router.get("/status", (req, res) => {
-  console.log('STATUS');
-  console.log('req.user', req.user);
-  console.log('req.session', req.session);
-
   if (!req.user) {
     return res.status(401).json({ message: "Not logged in" });
   }
@@ -54,6 +50,10 @@ router.post("/logout", (req, res) => {
 });
 
 router.post("/register", checkSchema(userCreateValidationSchema), async (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.status(400).json({ message: "You must be logged out to register" });
+  }
+
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {

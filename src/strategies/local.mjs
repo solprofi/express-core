@@ -24,7 +24,6 @@ passport.deserializeUser(async (id, done) => {
 export default passport.use(new LocalStrategy(
   async (username, password, done) => {
     try {
-  
       // Find user in mock database by username
       const user = await User.findOne({ username });
 

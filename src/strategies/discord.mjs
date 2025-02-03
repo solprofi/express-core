@@ -6,14 +6,10 @@ import DiscordUser from "../mongoose/schemas/discordUser.js";
 dotenv.config();
 
 passport.serializeUser((user, done) => {
-  console.log('SERIALIZE');
-  console.log('user', user);
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log('DESERIALIZE');
-  console.log('id', id);
   try {
     const user = await DiscordUser.findById(id);
     done(null, user);
