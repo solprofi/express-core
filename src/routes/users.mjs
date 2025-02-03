@@ -1,30 +1,37 @@
 import express from "express";
-import resolveUserByIdMiddleware from "../middlewares/resolveUserById.mjs";
-import { USERS } from "../mockData/users.mjs";
+import { isAuthenticated } from "../middlewares/auth.mjs";
+import User from "../mongoose/schemas/user.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", isAuthenticated, async (req, res) => {
   const { filterKey, filterValue } = req.query;
 
+  const users = await User.find({}).select('username displayName');
+
   if (!filterKey || !filterValue) {
-    return res.json(USERS);
+    return res.json(users);
   }
 
-  const filteredUsers = USERS.filter((user) =>
+  const filteredUsers = users.filter((user) =>
     user[filterKey]?.toString().toLowerCase().includes(filterValue.toLowerCase())
   );
 
   res.json(filteredUsers);
 });
 
-router.get("/:id", resolveUserByIdMiddleware, (req, res) => {
-  const user = USERS.find((user) => user.id === req.userId);
-  res.json(user);
+router.get("/:id", isAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.json(user);
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to get user' });
+  }
 });
 
-router.put("/:id", resolveUserByIdMiddleware, (req, res) => {
-  const user = USERS.find((user) => user.id === req.userId);
+router.put("/:id", isAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
 
   const { username, displayName } = req.body;
 
@@ -32,10 +39,14 @@ router.put("/:id", resolveUserByIdMiddleware, (req, res) => {
   user.displayName = displayName;
 
   res.json(user);
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to update user' });
+  }
 });
 
-router.patch("/:id", resolveUserByIdMiddleware, (req, res) => {
-  const user = USERS.find((user) => user.id === req.userId);
+router.patch("/:id", isAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
 
   const { username, displayName } = req.body;
 
@@ -48,12 +59,19 @@ router.patch("/:id", resolveUserByIdMiddleware, (req, res) => {
   }
 
   res.json(user);
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to update user' });
+  }
 });
 
-router.delete("/:id", resolveUserByIdMiddleware, (req, res) => {
-  const index = USERS.findIndex((user) => user.id === req.userId);
+router.delete("/:id", isAuthenticated, async (req, res) => {
+  const user = await User.findById(req.userId);
 
-  USERS.splice(index, 1);
+  try {
+    await user.deleteOne();
+  } catch (error) {
+    return res.status(500).json({ message: 'Failed to delete user' });
+  }
 
   res.sendStatus(204);
 });

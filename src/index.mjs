@@ -10,7 +10,8 @@ import connectDb from "./config/dbConnection.mjs";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 
-// import './strategies/local.mjs';
+// Import authentication strategies
+import './strategies/local.mjs';
 import './strategies/discord.mjs';
 
 // Load environment variables from .env file
@@ -60,14 +61,6 @@ app.use(errorHandlingMiddleware);
 
 // Mount all API routes under /api path
 app.use("/api", router);
-
-// Test route to simulate login
-app.get("/", (req, res) => {
-  // Set mock authentication state
-  req.session.isMockedLoggedIn = true;
-
-  res.json({ message: "TEST ROUTE" });
-});
 
 // Start the server
 app.listen(PORT, () => {
