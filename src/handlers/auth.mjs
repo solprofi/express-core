@@ -60,11 +60,10 @@ export const register = async (req, res) => {
 
   const { username, displayName, password } = matchedData(req);
 
-  const hashedPassword = await hashPassword(password);
-
-  const user = new User({ username, displayName, password: hashedPassword });
-
   try {
+    const hashedPassword = await hashPassword(password);
+
+    const user = new User({ username, displayName, password: hashedPassword });
     await user.save();
 
     const userObject = user.toObject();
