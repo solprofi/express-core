@@ -1,6 +1,6 @@
 # Node.js REST API Project
 
-This project implements a RESTful API using modern Node.js technologies and best practices.
+This project implements a RESTful API with RBAC using modern Node.js technologies and best practices.
 
 ## Tech Stack
 
@@ -14,6 +14,7 @@ This project implements a RESTful API using modern Node.js technologies and best
 ### Testing
 
 - Jest - Testing framework
+- Supertest - HTTP assertions library
 
 ### Authentication & Security
 
@@ -34,3 +35,4 @@ This project implements a RESTful API using modern Node.js technologies and best
 - Unit tests for middleware and routes
 - MongoDB integration with Mongoose schemas
 - Password hashing and secure storage
+- Role-based access control
