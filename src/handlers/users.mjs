@@ -3,7 +3,7 @@ import User from "../mongoose/schemas/user.js";
 export const getAllUsers = async (req, res) => {
   const { filterKey, filterValue } = req.query;
 
-  const users = await User.find({}).select("username displayName");
+  const users = await User.find({}).select("username displayName role");
 
   if (!filterKey || !filterValue) {
     return res.json(users);
