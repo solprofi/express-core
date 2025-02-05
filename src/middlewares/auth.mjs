@@ -15,13 +15,13 @@ export const isAuthenticated = (req, res, next) => {
   next();
 };
 
-export const hasRole = (role) => {
+export const hasRole = (roles) => {
   return (req, res, next) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    if (req.user.role !== role) {
+    if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: "Forbidden" });
     }
 

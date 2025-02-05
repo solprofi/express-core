@@ -17,7 +17,7 @@ import { ROLES } from "../common/constants.mjs";
 
 const router = express.Router();
 
-router.get("/", isAuthenticated, hasRole(ROLES.ADMIN), getAllUsers);
+router.get("/", isAuthenticated, hasRole([ROLES.ADMIN]), getAllUsers);
 router.get("/:id", isAuthenticated, authGetUser, getUserById);
 router.put("/:id", isAuthenticated, authUpdateUser, updateUser);
 router.patch("/:id", isAuthenticated, authUpdateUser, patchUser);
