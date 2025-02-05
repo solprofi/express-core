@@ -58,12 +58,17 @@ export const register = async (req, res) => {
     return res.status(400).json({ errors: errors.array()?.[0] });
   }
 
-  const { username, displayName, password } = matchedData(req);
+  const { username, displayName, password, role } = matchedData(req);
 
   try {
     const hashedPassword = await hashPassword(password);
 
-    const user = new User({ username, displayName, password: hashedPassword });
+    const user = new User({
+      username,
+      displayName,
+      password: hashedPassword,
+      role,
+    });
     await user.save();
 
     const userObject = user.toObject();

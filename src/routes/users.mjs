@@ -6,7 +6,7 @@ import {
   updateUser,
   patchUser,
   deleteUser,
-} from "../handlers/users.mjs";
+} from "../controllers/users.mjs";
 import {
   authUpdateUser,
   hasRole,

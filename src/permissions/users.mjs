@@ -1,3 +1,5 @@
+import { ROLES } from "../common/constants.mjs";
+
 const canUpdateUser = (user, updatedUser) => {
   return user.id === updatedUser.id || user.role === ROLES.ADMIN;
 };

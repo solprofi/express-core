@@ -1,5 +1,5 @@
 import { matchedData, validationResult } from "express-validator";
-import { register } from "../handlers/auth.mjs";
+import { register } from "../controllers/auth.mjs";
 import { hashPassword } from "../utils/auth.mjs";
 import User from "../mongoose/schemas/user.js";
 

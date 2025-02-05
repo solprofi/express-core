@@ -8,7 +8,7 @@ import {
   register,
   discordAuth,
   discordAuthRedirect,
-} from "../handlers/auth.mjs";
+} from "../controllers/auth.mjs";
 
 const router = express.Router();
 
